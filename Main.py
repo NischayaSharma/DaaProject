@@ -1,16 +1,18 @@
 import networkx as nx
 import GraphUtils
-import bellMan
+import bellMan, Djikstra
 
-# Method to calculate the Single source dijkstra and Display it
-# It prints if the graph contains negative weights
+gConf = GraphUtils.GraphUtils()
+# graphWhereDjikstraFails = {0: [(1, -1), (2, -2)], 1: [(2, 3), (3, 2), (4, 2)], 2: [], 3: [(2, -5), (1, 1)], 4: [(3, 3)]}
+graph = {0: [(1, -1), (2, -2)], 1: [(2, 3), (3, 2), (4, 2)], 2: [], 3: [(2, 5), (1, 1)], 4: [(3, 3)]}
+labels = {0: "Hospital", 1: "Work", 2: "Shop", 3: "Grocery Store", 4: "Home"}
+source = 0
 
-
-def djikstra(gConf, G, labels, pos, source):
+def djikstra(gConf, graph, G, labels, pos, source):
     try:
         # Calculating shortest distances and shortest path
         # from source node to every node
-        length, path = nx.single_source_dijkstra(G, source)
+        path = Djikstra.driver(graph, source)
         # Creating graph from the above obtained path
         djiGraph, labels, eLabels = gConf.createGraphFromPath(G, path, labels)
         # Displaying the above created graph
@@ -29,15 +31,11 @@ def bellmanFord(gConf, graph, G, labels, pos, source):
                        labels=labels, eLabels=eLabels, pos=pos)
 
 
-gConf = GraphUtils.GraphUtils()
-graph = {0: [(1, -1), (2, -2)], 1: [(2, 3), (3, 2), (4, 2)],
-         2: [], 3: [(2, 5), (1, 1)], 4: [(3, 3)]}
-labels = {0: "Home", 1: "Work", 2: "Shop",
-          3: "Grocery Store", 4: "Hello World"}
-source = 0
-G, pos, eLabels = gConf.createGraph(graph)
+G, _, eLabels = gConf.createGraph(graph)
+pos = {0: ([0.06860986, 0.27299064]), 1: ([0.4623169 , 0.41947186]), 2: ([0.8904452 , 0.34492362]), 3: ([0.63216573, 0.8758493 ]), 4: ([0.305631 , 0.506014])}
+# print(pos)
 gConf.displayGraph(G=G, pos=pos, labels=labels,
                    eLabels=eLabels, name="originalGraph.jpeg")
-djikstra(gConf=gConf, G=G, labels=labels, pos=pos, source=source)
-bellmanFord(gconf=gConf, graph=graph, G=G,
+djikstra(gConf=gConf, graph=graph, G=G, labels=labels, pos=pos, source=source)
+bellmanFord(gConf=gConf, graph=graph, G=G,
             labels=labels, pos=pos, source=source)
